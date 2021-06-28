@@ -10,22 +10,16 @@ module.exports = {
   },
 
   async create(req, res) {
-    const { name, email, password, teamId } = req.body;
+    const { name, email, password } = req.body;
 
-    if (!name || !email || !teamId) {
-      return res.status(400).send({ error: 'Informe nome, email e time para continuar.' });
+    if (!name || !email) {
+      return res.status(400).send({ error: 'Informe nome e email para continuar.' });
     }
 
     const exists = await User.findOne({ email });
 
     if (exists) {
       return res.status(400).send({ error: 'Usuário já existe' });
-    }
-
-    const team = await Team.findOne({ id: teamId });
-
-    if (!team) {
-      return res.status(400).send({ error: 'Time não cadastrado.' });
     }
 
 
@@ -42,28 +36,22 @@ module.exports = {
         displayName: name,
         disabled: false,
       })
-      .then(async (userRecord) => {
+      .then((userRecord) => {
         console.log('Successfully created new user:', userRecord.uid);
-        const user = await User.create({
-          uid: userRecord.uid,
-          name,
-          email
-        })
-        return res.json({ user: user._id });
       })
       .catch((error) => {
-        switch(error.code) {
-          case 'auth/email-already-exists':
-            return res.json({ "error": "Usuário já existe." });
-            break
-          default:
-            console.log("erro ", error)
-            return res.json({ "error": "Erro ao cadastrar usuário." });
-        }
+        console.log('Error creating new user:', error);
       });
 
+    // await connection('users').insert({
+    //   id,
+    //   first_name,
+    //   last_name,
+    //   email,
+    //   password: hashedPassword,
+    //   isEmailConfirmed
+    // })
 
-
-    
+    return res.json({ id });
   },
 }

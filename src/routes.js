@@ -7,6 +7,7 @@ const auth = require('./middlewares/auth');
 const UserController = require('./controllers/UserController');
 
 routes.get('/users', auth, UserController.view);
+routes.post('/users', auth, UserController.create);
 
 
 

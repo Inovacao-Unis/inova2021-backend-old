@@ -2,13 +2,24 @@ const express = require('express');
 const mongoose = require('mongoose');
 const routes = require('./routes');
 const cors = require('cors');
+const admin = require("firebase-admin");
+const googleKey = require("./utils/googleKey")
+
+admin.initializeApp({
+  credential: admin.credential.cert(googleKey),
+  databaseURL: 'https://inova-c70f5.firebaseio.com'
+});
 
 const app = express();
 
-mongoose.connect(process.env.MONGOURL, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.MONGOURL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+});
 
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header('Content-Type', 'application/json;charset=UTF-8')
   res.header('Access-Control-Allow-Credentials', true)
   res.header('Access-Control-Allow-Origin', req.headers.origin);
@@ -21,14 +32,14 @@ app.use(function(req, res, next) {
 })
 
 const corsConfig = {
-	origin: true,
-	credentials: true,
-  };
-  
-  
-  app.use(cors(corsConfig));
-  app.options('*', cors(corsConfig));
-  app.use(express.json());
-  app.use(routes);
-  
-  app.listen(3333);
+  origin: true,
+  credentials: true,
+};
+
+
+app.use(cors(corsConfig));
+app.options('*', cors(corsConfig));
+app.use(express.json());
+app.use(routes);
+
+app.listen(3333);
