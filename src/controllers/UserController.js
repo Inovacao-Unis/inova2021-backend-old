@@ -1,12 +1,13 @@
-const mongoose = require('mongoose');
 const User = require('../models/User');
 const Team = require('../models/Team');
 const admin = require("firebase-admin");
 
 module.exports = {
   async view(req, res) {
-    const teams = await Team.find()
-    return res.json({ teams });
+    const { authId } = req
+    console.log('res: ', res)
+    const user = await User.findOne({ uid: authId })
+    return res.json({ user });
   },
 
   async create(req, res) {
@@ -22,7 +23,7 @@ module.exports = {
       return res.status(400).send({ error: 'Usuário já existe' });
     }
 
-    const team = await Team.findOne({ id: teamId });
+    const team = await Team.findOne({ _id: teamId });
 
     if (!team) {
       return res.status(400).send({ error: 'Time não cadastrado.' });
@@ -47,7 +48,8 @@ module.exports = {
         const user = await User.create({
           uid: userRecord.uid,
           name,
-          email
+          email,
+          team_id: teamId
         })
         return res.json({ user: user._id });
       })
