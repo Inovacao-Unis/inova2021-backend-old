@@ -4,6 +4,13 @@ const normalize = require('../utils/normalize');
 
 module.exports = {
   async view(req, res) {
+    const { id } = req.params
+    const team = await Team.findById(id).populate("users")
+    
+    return res.json(team)
+  },
+
+  async list(req, res) {
     const teams = await Team.find()
     return res.json({ teams });
   },
@@ -28,5 +35,19 @@ module.exports = {
       username
     })
     return res.json({ 'message': 'Time criado!' });
+  },
+
+  async update(req, res) {
+    const { id } = req.params;
+    const result = await Team.findByIdAndUpdate(id, req.body, { new: true });
+
+    return res.json({ result });
+  },
+
+  async delete(req, res) {
+    const { id } = req.params;
+    await Team.findByIdAndDelete({ _id: id });
+
+    return res.json({ message: 'Deletado' });
   },
 }

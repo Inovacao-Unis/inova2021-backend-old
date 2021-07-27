@@ -5,9 +5,14 @@ const admin = require("firebase-admin");
 module.exports = {
   async view(req, res) {
     const { authId } = req
-    console.log('res: ', res)
     const user = await User.findOne({ uid: authId })
+
     return res.json({ user });
+  },
+
+  async list(req, res) {
+    const users = await User.find()
+    return res.json(users)
   },
 
   async create(req, res) {
@@ -44,17 +49,20 @@ module.exports = {
         disabled: false,
       })
       .then(async (userRecord) => {
-        console.log('Successfully created new user:', userRecord.uid);
         const user = await User.create({
           uid: userRecord.uid,
           name,
           email,
           team_id: teamId
         })
+
+        team.users.push(user);
+        await team.save();
+
         return res.json({ user: user._id });
       })
       .catch((error) => {
-        switch(error.code) {
+        switch (error.code) {
           case 'auth/email-already-exists':
             return res.json({ "error": "Usuário já existe." });
             break
@@ -63,9 +71,33 @@ module.exports = {
             return res.json({ "error": "Erro ao cadastrar usuário." });
         }
       });
+  },
 
+  async update(req, res) {
+    const { id } = req.params;
+    const result = await User.findByIdAndUpdate(id, req.body, { new: true });
 
+    return res.json({ result });
+  },
 
-    
+  async delete(req, res) {
+    const { id } = req.params;
+    const user = await User.findById(id)
+
+    if (!user) {
+      return res.status(400).send({ error: 'Usuário não existe.' });
+    }
+
+    admin
+      .auth()
+      .deleteUser(user.uid)
+      .then(async () => {
+        await User.findByIdAndDelete({ _id: id });
+        return res.json({ message: 'Deletado' });
+      })
+      .catch((error) => {
+        return res.status(400).send({ error: 'Não foi possível deletar o usuário.' });
+      });
+
   },
 }
