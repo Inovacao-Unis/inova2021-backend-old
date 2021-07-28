@@ -38,14 +38,14 @@ module.exports = {
 
     const team_id = user.team_id;
 
-    const isExists = await FormResponse.findOne({
+    const exists = await FormResponse.findOne({
       $and: [
         { form_id },
         { team_id }
       ]
     })
 
-    if (!isExists) {
+    if (exists) {
       return res.status(400).send({ error: 'Já respondido pelo time.' });
     }
 

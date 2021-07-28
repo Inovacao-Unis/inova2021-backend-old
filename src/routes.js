@@ -10,7 +10,7 @@ const TeamController = require('./controllers/TeamController');
 const FormController = require('./controllers/FormController');
 const FormItemController = require('./controllers/FormItemController');
 const ItemChoiceController = require('./controllers/ItemChoiceController');
-const ItemResponseController = require('./controllers/ItemResponseController');
+const FormResponseController = require('./controllers/FormResponseController');
 
 routes.get('/check', auth, AuthController.check);
 
@@ -44,11 +44,11 @@ routes.post('/item-choices', auth, ItemChoiceController.create);
 routes.put('/item-choice/:id', auth, ItemChoiceController.update);
 routes.delete('/item-choice/:id', auth, ItemChoiceController.delete);
 
-routes.get('/item-response/:id', auth, ItemResponseController.view);
-routes.get('/item-responses', auth, ItemResponseController.list);
-routes.post('/item-responses', auth, ItemResponseController.create);
-routes.put('/item-response/:id', auth, ItemResponseController.update);
-routes.delete('/item-response/:id', auth, ItemResponseController.delete);
+routes.get('/form-response/:id', auth, FormResponseController.view);
+routes.get('/form-responses', auth, FormResponseController.list);
+routes.post('/form-responses', auth, FormResponseController.create);
+routes.put('/form-response/:id', auth, FormResponseController.update);
+routes.delete('/form-response/:id', auth, FormResponseController.delete);
 
 
 
