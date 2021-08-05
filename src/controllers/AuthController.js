@@ -1,18 +1,29 @@
-const User = require('../models/User');
+const User = require("../models/User");
+const AllowedEmail = require("../models/AllowedEmail");
 
 module.exports = {
   async check(req, res) {
-    const { authId } = req
-    const user = await User.findOne({ uid: authId })
+    return res.json({ message: "success" });
+  },
 
-    if (!user) {
-      return res.status(400).send({ error: 'Usuário não existe' });
+  async registerEmail(req, res) {
+    const { email } = req.body;
+
+    const exists = await AllowedEmail.findOne({ email });
+
+    if (exists) {
+      return res.status(400).send({
+        error: "Email já cadastrado",
+      });
     }
 
-    return res.json({
-      teamId: user.team_id,
-      userId: user._id,
-      userUid: user.uid
-    });
-  }
-}
+    const result = await AllowedEmail.create({ email });
+
+    res.json(result);
+  },
+
+  async allowedEmails(req, res) {
+    const emails = await AllowedEmail.find();
+    res.json(emails);
+  },
+};

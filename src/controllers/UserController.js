@@ -1,51 +1,55 @@
-const User = require('../models/User');
-const Team = require('../models/Team');
+const User = require("../models/User");
+const AllowedEmail = require("../models/AllowedEmail");
+const Team = require("../models/Team");
 const admin = require("firebase-admin");
 
 module.exports = {
   async view(req, res) {
-    const { authId } = req
-    const user = await User.findOne({ uid: authId })
+    const { authId } = req;
+    const user = await User.findOne({ uid: authId });
 
     return res.json({ user });
   },
 
   async list(req, res) {
-    const users = await User.find()
-    return res.json(users)
+    const users = await User.find();
+    return res.json(users);
   },
 
   async create(req, res) {
-    const { name, email, password, teamId } = req.body;
+    const { displayName, email, password, teamId } = req.body;
 
-    if (!name || !email || !teamId) {
-      return res.status(400).send({ error: 'Informe nome, email e time para continuar.' });
+    if (!displayName || !email || !teamId) {
+      return res
+        .status(400)
+        .send({ error: "Informe nome, email e time para continuar." });
     }
 
-    const exists = await User.findOne({ email });
+    const exists = await AllowedEmail.findOne({ email });
 
-    if (exists) {
-      return res.status(400).send({ error: 'Usuário já existe' });
+    if (!exists) {
+      return res
+        .status(400)
+        .send({ error: "Sem autorização para se cadastrar." });
     }
 
     const team = await Team.findOne({ _id: teamId });
 
     if (!team) {
-      return res.status(400).send({ error: 'Time não cadastrado.' });
+      return res.status(400).send({ error: "Time não cadastrado." });
     }
-
 
     if (!password) {
-      return res.status(400).send({ error: 'Informe a senha para continuar' });
+      return res.status(400).send({ error: "Informe a senha para continuar" });
     }
 
-    admin
+    await admin
       .auth()
       .createUser({
         email,
         emailVerified: false,
         password,
-        displayName: name,
+        displayName,
         disabled: false,
       })
       .then(async (userRecord) => {
@@ -53,8 +57,8 @@ module.exports = {
           uid: userRecord.uid,
           name,
           email,
-          team_id: teamId
-        })
+          team_id: teamId,
+        });
 
         team.users.push(user);
         await team.save();
@@ -63,12 +67,12 @@ module.exports = {
       })
       .catch((error) => {
         switch (error.code) {
-          case 'auth/email-already-exists':
-            return res.json({ "error": "Usuário já existe." });
-            break
+          case "auth/email-already-exists":
+            return res.json({ error: "Usuário já existe." });
+            break;
           default:
-            console.log("erro ", error)
-            return res.json({ "error": "Erro ao cadastrar usuário." });
+            console.log("erro ", error);
+            return res.json({ error: "Erro ao cadastrar usuário." });
         }
       });
   },
@@ -82,10 +86,10 @@ module.exports = {
 
   async delete(req, res) {
     const { id } = req.params;
-    const user = await User.findById(id)
+    const user = await User.findById(id);
 
     if (!user) {
-      return res.status(400).send({ error: 'Usuário não existe.' });
+      return res.status(400).send({ error: "Usuário não existe." });
     }
 
     admin
@@ -93,11 +97,12 @@ module.exports = {
       .deleteUser(user.uid)
       .then(async () => {
         await User.findByIdAndDelete({ _id: id });
-        return res.json({ message: 'Deletado' });
+        return res.json({ message: "Deletado" });
       })
       .catch((error) => {
-        return res.status(400).send({ error: 'Não foi possível deletar o usuário.' });
+        return res
+          .status(400)
+          .send({ error: "Não foi possível deletar o usuário." });
       });
-
   },
-}
+};

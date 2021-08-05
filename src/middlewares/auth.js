@@ -1,13 +1,12 @@
 const admin = require("firebase-admin");
 
 module.exports = (req, res, next) => {
-
   const getAuthToken = (req, res, next) => {
     if (
       req.headers.authorization &&
-      req.headers.authorization.split(' ')[0] === 'Bearer'
+      req.headers.authorization.split(" ")[0] === "Bearer"
     ) {
-      req.authToken = req.headers.authorization.split(' ')[1];
+      req.authToken = req.headers.authorization.split(" ")[1];
     } else {
       req.authToken = null;
     }
@@ -18,15 +17,11 @@ module.exports = (req, res, next) => {
     try {
       const { authToken } = req;
 
-      const userInfo = await admin
-        .auth()
-        .verifyIdToken(authToken);
+      const userInfo = await admin.auth().verifyIdToken(authToken);
       req.authId = userInfo.uid;
       return next();
     } catch (e) {
-      return res
-        .status(401)
-        .send({ error: 'Não autorizado.' });
+      return res.status(401).send({ error: "Não autorizado." });
     }
   });
-}
+};
