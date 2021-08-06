@@ -1,4 +1,3 @@
-const User = require("../models/User");
 const AllowedEmail = require("../models/AllowedEmail");
 
 module.exports = {

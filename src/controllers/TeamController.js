@@ -1,17 +1,16 @@
-const User = require('../models/User');
-const Team = require('../models/Team');
-const normalize = require('../utils/normalize');
+const Team = require("../models/Team");
+const normalize = require("../utils/normalize");
 
 module.exports = {
   async view(req, res) {
-    const { id } = req.params
-    const team = await Team.findById(id).populate("users")
-    
-    return res.json(team)
+    const { id } = req.params;
+    const team = await Team.findById(id).populate("users");
+
+    return res.json(team);
   },
 
   async list(req, res) {
-    const teams = await Team.find()
+    const teams = await Team.find();
     return res.json({ teams });
   },
 
@@ -19,22 +18,22 @@ module.exports = {
     const { name } = req.body;
 
     if (!name) {
-      return res.status(400).send({ error: 'Informe o nome para continuar.' });
+      return res.status(400).send({ error: "Informe o nome para continuar." });
     }
 
     const username = normalize(name);
 
-    const exists = await User.findOne({ username });
+    const exists = await team.findOne({ username });
 
     if (exists) {
-      return res.status(400).send({ error: 'Time já existe' });
+      return res.status(400).send({ error: "Time já existe" });
     }
 
     await Team.create({
       name,
-      username
-    })
-    return res.json({ 'message': 'Time criado!' });
+      username,
+    });
+    return res.json({ message: "Time criado!" });
   },
 
   async update(req, res) {
@@ -48,6 +47,6 @@ module.exports = {
     const { id } = req.params;
     await Team.findByIdAndDelete({ _id: id });
 
-    return res.json({ message: 'Deletado' });
+    return res.json({ message: "Deletado" });
   },
-}
+};

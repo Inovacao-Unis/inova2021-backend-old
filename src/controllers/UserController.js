@@ -1,4 +1,3 @@
-const User = require("../models/User");
 const AllowedEmail = require("../models/AllowedEmail");
 const Team = require("../models/Team");
 const admin = require("firebase-admin");
@@ -6,13 +5,27 @@ const admin = require("firebase-admin");
 module.exports = {
   async view(req, res) {
     const { authId } = req;
-    const user = await User.findOne({ uid: authId });
 
-    return res.json({ user });
+    const team = await Team.find({ users: ["lL2jxsVxPYYqEzOESwI6EojqqPY2"] });
+
+    // const team = await Team.find({
+    //   users: ["lL2jxsVxPYYqEzOESwI6EojqqPY2"],
+    // });
+
+    return res.json({ team });
   },
 
   async list(req, res) {
-    const users = await User.find();
+    await admin
+      .auth()
+      .listUsers(1000)
+      .then((listUsersResult) => {
+        return res.json(listUsersResult);
+      })
+      .catch((error) => {
+        console.log("Error fetching user data:", error);
+      });
+
     return res.json(users);
   },
 
@@ -53,17 +66,7 @@ module.exports = {
         disabled: false,
       })
       .then(async (userRecord) => {
-        const user = await User.create({
-          uid: userRecord.uid,
-          name,
-          email,
-          team_id: teamId,
-        });
-
-        team.users.push(user);
-        await team.save();
-
-        return res.json({ user: user._id });
+        return res.json(userRecord);
       })
       .catch((error) => {
         switch (error.code) {
@@ -79,30 +82,30 @@ module.exports = {
 
   async update(req, res) {
     const { id } = req.params;
-    const result = await User.findByIdAndUpdate(id, req.body, { new: true });
+    // const result = await User.findByIdAndUpdate(id, req.body, { new: true });
 
     return res.json({ result });
   },
 
-  async delete(req, res) {
-    const { id } = req.params;
-    const user = await User.findById(id);
+  // async delete(req, res) {
+  //   const { id } = req.params;
+  //   const user = await User.findById(id);
 
-    if (!user) {
-      return res.status(400).send({ error: "Usuário não existe." });
-    }
+  //   if (!user) {
+  //     return res.status(400).send({ error: "Usuário não existe." });
+  //   }
 
-    admin
-      .auth()
-      .deleteUser(user.uid)
-      .then(async () => {
-        await User.findByIdAndDelete({ _id: id });
-        return res.json({ message: "Deletado" });
-      })
-      .catch((error) => {
-        return res
-          .status(400)
-          .send({ error: "Não foi possível deletar o usuário." });
-      });
-  },
+  //   admin
+  //     .auth()
+  //     .deleteUser(user.uid)
+  //     .then(async () => {
+  //       await User.findByIdAndDelete({ _id: id });
+  //       return res.json({ message: "Deletado" });
+  //     })
+  //     .catch((error) => {
+  //       return res
+  //         .status(400)
+  //         .send({ error: "Não foi possível deletar o usuário." });
+  //     });
+  // },
 };
