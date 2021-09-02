@@ -26,10 +26,10 @@ routes.put("/user/:id", auth, UserController.update);
 
 routes.get("/user-team-view", auth, UserTeamController.view);
 routes.get("/user-team", auth, UserTeamController.viewTeam);
-routes.get("/user-teams", UserTeamController.list);
-routes.post("/user-teams", UserTeamController.create);
+routes.get("/user-teams", auth, UserTeamController.list);
+routes.post("/user-team", auth, UserTeamController.create);
 routes.put("/user-team/:id", auth, UserTeamController.update);
-routes.delete("/user-team/:id", UserTeamController.delete);
+routes.delete("/user-team/:id", auth, UserTeamController.delete);
 
 routes.get("/team/:id", auth, TeamController.view);
 routes.get("/teams", auth, TeamController.list);

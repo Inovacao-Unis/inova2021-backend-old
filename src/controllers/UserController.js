@@ -6,13 +6,28 @@ module.exports = {
   async view(req, res) {
     const { authId } = req;
 
-    const team = await Team.find({ users: ["lL2jxsVxPYYqEzOESwI6EojqqPY2"] });
+    // await admin
+    //   .auth()
+    //   .getUser(authId)
+    //   .then((user) => {
+    //     return res.json(user);
+    //   })
+    //   .catch((error) => {
+    //     return res.status(400).send({ error: "Erro ao buscar dados." })
+    //   });
 
-    // const team = await Team.find({
-    //   users: ["lL2jxsVxPYYqEzOESwI6EojqqPY2"],
-    // });
-
-    return res.json({ team });
+    await admin
+      .auth()
+      .getUsers([
+        {uid: 'nwY3A7jnV2UNJzJVmA91wKyvLJi2'},
+        {uid: 'lL2jxsVxPYYqEzOESwI6EojqqPY2'},
+      ])
+      .then((user) => {
+        return res.json(user);
+      })
+      .catch((error) => {
+        return res.status(400).send({ error: "Erro ao buscar dados." })
+      });
   },
 
   async list(req, res) {
@@ -23,10 +38,8 @@ module.exports = {
         return res.json(listUsersResult);
       })
       .catch((error) => {
-        console.log("Error fetching user data:", error);
+        return res.status(400).send({ error: "Erro ao buscar dados." })
       });
-
-    return res.json(users);
   },
 
   async create(req, res) {

@@ -6,7 +6,6 @@ const UserTeamSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      index: { unique: true },
     },
     team_id: {
       type: mongoose.Schema.Types.ObjectId,

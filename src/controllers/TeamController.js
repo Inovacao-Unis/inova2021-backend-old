@@ -10,7 +10,7 @@ module.exports = {
   },
 
   async list(req, res) {
-    const teams = await Team.find();
+    const teams = await Team.find().populate('user');
     return res.json({ teams });
   },
 
@@ -23,7 +23,7 @@ module.exports = {
 
     const username = normalize(name);
 
-    const exists = await team.findOne({ username });
+    const exists = await Team.findOne({ username });
 
     if (exists) {
       return res.status(400).send({ error: "Time já existe" });

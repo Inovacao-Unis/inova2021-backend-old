@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const UserTeam = require("../models/UserTeam");
 const Team = require("../models/Team");
 const admin = require("firebase-admin");
@@ -14,7 +15,7 @@ module.exports = {
   async viewTeam(req, res) {
     const { authId } = req;
 
-    const team = await UserTeam.findById(authId);
+    const team = await UserTeam.findOne({ uid: authId });
 
     return res.json({ team });
   },
@@ -26,7 +27,8 @@ module.exports = {
   },
 
   async create(req, res) {
-    const { uid, team_id } = req.body;
+    const { authId } = req;
+    const { team_id } = req.body;
 
     const team = await Team.findById(team_id);
 
@@ -34,10 +36,18 @@ module.exports = {
       return res.status(400).send({ error: "Time não cadastrado." });
     }
 
-    team.users.push(uid);
-    await team.save();
+    const userTeam = await UserTeam.findOne({ uid: authId });
 
-    res.json(uid);
+    if (userTeam) {
+      return res.status(400).send({ error: "Usuário já está em um time." });
+    }
+
+    const result = await UserTeam.create({
+      uid: authId,
+      team_id,
+    });
+
+    res.json(result);
   },
 
   async update(req, res) {
