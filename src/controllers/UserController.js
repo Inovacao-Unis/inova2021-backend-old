@@ -6,22 +6,9 @@ module.exports = {
   async view(req, res) {
     const { authId } = req;
 
-    // await admin
-    //   .auth()
-    //   .getUser(authId)
-    //   .then((user) => {
-    //     return res.json(user);
-    //   })
-    //   .catch((error) => {
-    //     return res.status(400).send({ error: "Erro ao buscar dados." })
-    //   });
-
     await admin
       .auth()
-      .getUsers([
-        {uid: 'nwY3A7jnV2UNJzJVmA91wKyvLJi2'},
-        {uid: 'lL2jxsVxPYYqEzOESwI6EojqqPY2'},
-      ])
+      .getUser(authId)
       .then((user) => {
         return res.json(user);
       })

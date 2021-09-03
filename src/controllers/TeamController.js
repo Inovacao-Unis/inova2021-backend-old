@@ -4,7 +4,7 @@ const normalize = require("../utils/normalize");
 module.exports = {
   async view(req, res) {
     const { id } = req.params;
-    const team = await Team.findById(id).populate("users");
+    const team = await Team.findById(id);
 
     return res.json(team);
   },

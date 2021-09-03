@@ -24,12 +24,11 @@ routes.post("/users", UserController.create);
 routes.put("/user/:id", auth, UserController.update);
 //routes.delete("/user/:id", UserController.delete);
 
-routes.get("/user-team-view", auth, UserTeamController.view);
-routes.get("/user-team", auth, UserTeamController.viewTeam);
-routes.get("/user-teams", auth, UserTeamController.list);
+routes.get("/user-team", auth, UserTeamController.view);
+routes.get("/users-team/:team_id", auth, UserTeamController.list);
 routes.post("/user-team", auth, UserTeamController.create);
-routes.put("/user-team/:id", auth, UserTeamController.update);
-routes.delete("/user-team/:id", auth, UserTeamController.delete);
+// routes.put("/user-team/:id", auth, UserTeamController.update);
+// routes.delete("/user-team/:id", auth, UserTeamController.delete);
 
 routes.get("/team/:id", auth, TeamController.view);
 routes.get("/teams", auth, TeamController.list);
