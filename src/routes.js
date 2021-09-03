@@ -13,6 +13,7 @@ const FormItemController = require("./controllers/FormItemController");
 const ItemChoiceController = require("./controllers/ItemChoiceController");
 const FormResponseController = require("./controllers/FormResponseController");
 const FormTeamResponseController = require("./controllers/FormTeamResponseController");
+const JourneyController = require("./controllers/JourneyController");
 
 routes.get("/check", auth, AuthController.check);
 routes.post("/register-email", AuthController.registerEmail);
@@ -59,6 +60,12 @@ routes.get("/form-responses", auth, FormResponseController.list);
 routes.post("/form-responses", auth, FormResponseController.create);
 routes.put("/form-response/:id", auth, FormResponseController.update);
 routes.delete("/form-response/:id", auth, FormResponseController.delete);
+
+routes.get("/journey/:id", auth, JourneyController.view);
+routes.get("/journeys", auth, JourneyController.list);
+routes.post("/journeys", auth, JourneyController.create);
+routes.put("/journey/:id", auth, JourneyController.update);
+routes.delete("/journey/:id", auth, JourneyController.delete);
 
 routes.get("/team-response/:form_id", auth, FormTeamResponseController.view);
 //routes.get("/team-responses", auth, FormTeamResponseController.list);

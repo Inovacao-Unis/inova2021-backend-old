@@ -10,7 +10,7 @@ module.exports = {
   },
 
   async list(req, res) {
-    const teams = await Team.find().populate('user');
+    const teams = await Team.find();
     return res.json({ teams });
   },
 
