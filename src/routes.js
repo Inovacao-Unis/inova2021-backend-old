@@ -14,6 +14,8 @@ const ItemChoiceController = require("./controllers/ItemChoiceController");
 const FormResponseController = require("./controllers/FormResponseController");
 const FormTeamResponseController = require("./controllers/FormTeamResponseController");
 const JourneyController = require("./controllers/JourneyController");
+const ChallengeController = require("./controllers/ChallengeController");
+const ContentController = require("./controllers/ContentController");
 
 routes.get("/check", auth, AuthController.check);
 routes.post("/register-email", AuthController.registerEmail);
@@ -66,6 +68,17 @@ routes.get("/journeys", auth, JourneyController.list);
 routes.post("/journeys", auth, JourneyController.create);
 routes.put("/journey/:id", auth, JourneyController.update);
 routes.delete("/journey/:id", auth, JourneyController.delete);
+
+routes.get("/challenge/:id", auth, ChallengeController.view);
+routes.get("/challenges", auth, ChallengeController.list);
+routes.post("/challenges", auth, ChallengeController.create);
+routes.put("/challenge/:id", auth, ChallengeController.update);
+routes.delete("/challenge/:id", auth, ChallengeController.delete);
+
+routes.get("/content/:challenge_id", auth, ContentController.view);
+routes.post("/content", auth, ContentController.create);
+routes.put("/content/:id", auth, ContentController.update);
+routes.delete("/content/:id", auth, ContentController.delete);
 
 routes.get("/team-response/:form_id", auth, FormTeamResponseController.view);
 //routes.get("/team-responses", auth, FormTeamResponseController.list);
