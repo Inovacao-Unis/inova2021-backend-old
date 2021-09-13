@@ -1,5 +1,5 @@
 const express = require("express");
-
+const multer = require('multer');
 const routes = express.Router();
 
 const auth = require("./middlewares/auth");
@@ -16,6 +16,14 @@ const FormTeamResponseController = require("./controllers/FormTeamResponseContro
 const JourneyController = require("./controllers/JourneyController");
 const ChallengeController = require("./controllers/ChallengeController");
 const ContentController = require("./controllers/ContentController");
+const JourneyTeamController = require("./controllers/JourneyTeamController");
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024 // no larger than 5mb, you can change as needed.
+  }
+});
 
 routes.get("/check", auth, AuthController.check);
 routes.post("/register-email", AuthController.registerEmail);
@@ -63,10 +71,11 @@ routes.post("/form-responses", auth, FormResponseController.create);
 routes.put("/form-response/:id", auth, FormResponseController.update);
 routes.delete("/form-response/:id", auth, FormResponseController.delete);
 
-routes.get("/journey/:id", auth, JourneyController.view);
+routes.get("/journey/:slug", auth, JourneyController.view);
 routes.get("/journeys", auth, JourneyController.list);
 routes.post("/journeys", auth, JourneyController.create);
 routes.put("/journey/:id", auth, JourneyController.update);
+routes.put("/journey-image/:id", auth, upload.single('image'), JourneyController.updateImage);
 routes.delete("/journey/:id", auth, JourneyController.delete);
 
 routes.get("/challenge/:id", auth, ChallengeController.view);
@@ -81,6 +90,9 @@ routes.put("/content/:id", auth, ContentController.update);
 routes.delete("/content/:id", auth, ContentController.delete);
 
 routes.get("/team-response/:form_id", auth, FormTeamResponseController.view);
-//routes.get("/team-responses", auth, FormTeamResponseController.list);
+routes.get("/team-responses", auth, FormTeamResponseController.list);
+
+routes.get("/journey-team/:slug", auth, JourneyTeamController.view);
+
 
 module.exports = routes;

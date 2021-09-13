@@ -1,4 +1,5 @@
 const Challenge = require("../models/Challenge");
+const Journey = require("../models/Journey");
 const normalize = require("../utils/normalize");
 
 module.exports = {
@@ -15,13 +16,19 @@ module.exports = {
   },
 
   async create(req, res) {
-    const { title, position = 1 } = req.body;
+    const { title, position = 1, journey_id } = req.body;
 
     if (!title) {
       return res.status(400).send({ error: "Informe o título para continuar." });
     }
 
     const slug = normalize(title);
+
+    const journey = Journey.findById(journey_id)
+
+    if (!journey) {
+      return res.status(400).send({ error: "Jornada não existe." });
+    }
 
     const exists = await Challenge.findOne({ slug });
 
@@ -32,7 +39,8 @@ module.exports = {
     await Challenge.create({
       title,
       slug,
-      position
+      position,
+      journey_id
     });
     return res.json({ message: "Desafio criado!" });
   },

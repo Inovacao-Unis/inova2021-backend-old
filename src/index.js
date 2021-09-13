@@ -9,6 +9,7 @@ const googleKey = require("./utils/googleKey");
 admin.initializeApp({
   credential: admin.credential.cert(googleKey),
   databaseURL: "https://inova-c70f5.firebaseio.com",
+  storageBucket: "inova-c70f5.appspot.com"
 });
 
 const app = express();

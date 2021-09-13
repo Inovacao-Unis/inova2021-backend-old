@@ -3,6 +3,7 @@ const Form = require("../models/Form");
 const FormItem = require("../models/FormItem");
 const ItemChoice = require("../models/ItemChoice");
 const FormResponse = require("../models/FormResponse");
+const Challenge = require("../models/Challenge");
 
 module.exports = {
   async view(req, res) {
@@ -19,7 +20,7 @@ module.exports = {
   },
 
   async create(req, res) {
-    const { items, form_id } = req.body;
+    const { items, form_id, challenge_id } = req.body;
 
     if (!items || items.length < 1) {
       return res.status(400).send({ error: "Nenhuma resposta foi enviada." });
@@ -29,6 +30,12 @@ module.exports = {
       return res
         .status(400)
         .send({ error: "Informe o formulário para continuar." });
+    }
+
+    const challenge = Challenge.findById(challenge_id);
+
+    if (!challenge) {
+      return res.status(400).send({ error: "O desafio não existe." });
     }
 
     // const user = await User.findOne({ uid: req.authId })
@@ -51,6 +58,7 @@ module.exports = {
       items,
       form_id,
       team_id,
+      challenge_id
     });
 
     return res.json(response);

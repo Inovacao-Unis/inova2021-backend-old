@@ -17,9 +17,8 @@ module.exports = (req, res, next) => {
     try {
       const { authToken } = req;
 
-      // const userInfo = await admin.auth().verifyIdToken(authToken);
-      // req.authId = userInfo.uid;
-      req.authId = "lL2jxsVxPYYqEzOESwI6EojqqPY2";
+      const userInfo = await admin.auth().verifyIdToken(authToken);
+      req.authId = userInfo.uid;
       return next();
     } catch (e) {
       return res.status(401).send({ error: "Não autorizado." });

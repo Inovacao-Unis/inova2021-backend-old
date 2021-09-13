@@ -1,5 +1,6 @@
 const Form = require('../models/Form');
 const FormItem = require('../models/FormItem');
+const Challenge = require('../models/Challenge');
 const ItemChoice = require('../models/ItemChoice');
 const ItemResponse = require('../models/ItemResponse');
 
@@ -18,7 +19,7 @@ module.exports = {
   },
 
   async create(req, res) {
-    const { title, start, end } = req.body;
+    const { title, start, end, challenge_id } = req.body;
 
     if (!title) {
       return res.status(400).send({ error: 'Informe o título para continuar.' });
@@ -32,11 +33,18 @@ module.exports = {
       return res.status(400).send({ error: 'Informe a data de término para continuar.' });
     }
 
+    const challenge = Challenge.findById(challenge_id);
+
+    if (!challenge) {
+      return res.status(400).send({ error: "O desafio não existe." });
+    }
+
     startFormatted = start.split('/').reverse().join('-')
     endFormatted = end.split('/').reverse().join('-')
 
     const form = await Form.create({
       title,
+      challenge_id,
       start: startFormatted,
       end: endFormatted
     })

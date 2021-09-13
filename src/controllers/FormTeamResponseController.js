@@ -1,38 +1,30 @@
 const { findById } = require("../models/Form");
 const Form = require("../models/Form");
+const Team = require("../models/Team");
 const FormItem = require("../models/FormItem");
 const ItemChoice = require("../models/ItemChoice");
 const FormResponse = require("../models/FormResponse");
 
 module.exports = {
   async view(req, res) {
+    const { authId } = req;
     const { form_id } = req.params;
-    // const user = await User.findOne({ uid: req.authId });
 
-    // if (!user || !user.team_id) {
-    //   return res.status(400).send({ error: "Houve um erro com o time." });
-    // }
-
-    const team_id = user.team_id;
+    const team = await Team.findOne({ users: authId });
 
     const response = await FormResponse.findOne({
-      $and: [{ form_id }, { team_id }],
+      $and: [{ form_id }, { team_id: team.id }],
     });
 
     return res.json(response);
   },
 
-  // async list(req, res) {
-  // const user = await User.findOne({ uid: req.authId });
+  async list(req, res) {
+    const { authId } = req;
+    const team = await Team.findOne({ users: authId });
 
-  // if (!user || !user.team_id) {
-  //   return res.status(400).send({ error: "Houve um erro com o time." });
-  // }
+    const responses = await FormResponse.find({team_id: team._id});
 
-  //   const team_id = user.team_id;
-
-  //   const responses = await FormResponse.find({ team_id });
-
-  //   return res.json(responses);
-  // },
+    return res.json(responses);
+  },
 };

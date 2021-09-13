@@ -17,6 +17,11 @@ const FormResponseSchema = new mongoose.Schema({
     ref: 'Form',
     required: true
   },
+  challenge_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Challenge',
+    required: true
+  },
   team_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Team',
