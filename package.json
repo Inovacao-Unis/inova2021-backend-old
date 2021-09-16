@@ -1,7 +1,7 @@
 {
-  "name": "inova2021-backend",
+  "name": "inova-backend",
   "version": "1.0.0",
-  "description": "Backend Inova2021",
+  "description": "Backend Inova",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
